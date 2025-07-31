@@ -11,7 +11,7 @@ interface TransferEvent {
   blockNumber: number;
 }
 
-const INFURA_URL = `wss://mainnet.infura.io/ws/v3/${process.env.INFURA_URL}`
+const INFURA_URL = `wss://sepolia.infura.io/ws/v3/${process.env.INFURA_URL}`
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS
 
 const ERC721_ABI = [
