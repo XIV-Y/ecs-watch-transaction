@@ -6,7 +6,7 @@
     "start": "node dist/index.js",
     "dev": "ts-node src/index.ts",
     "dev:watch": "nodemon --exec ts-node src/index.ts",
-    "build": "tsc"
+    "build": "tsc --build"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +16,7 @@
     "@types/node": "^24.0.10",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.2"
   },
   "dependencies": {
     "dotenv": "^17.0.1",
