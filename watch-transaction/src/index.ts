@@ -61,11 +61,15 @@ class ERC721TransferListener {
 
     if (transfer.from === '0x0000000000000000000000000000000000000000') {
       type = 'MINT';
+
+      console.log('[MINT-1]');
     } else if (transfer.to === '0x0000000000000000000000000000000000000000') {
       type = 'BURN';
+
+      console.log('[BURN-1]');
     }
 
-    console.log(`✅ Transfer Transaction Type ${type}: ${JSON.stringify(transfer)}`);
+    console.log(`[SUCCESS-1] Transfer Transaction Type ${type}: ${JSON.stringify(transfer)}`);
   }
 }
 
