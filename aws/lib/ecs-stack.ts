@@ -32,7 +32,10 @@ export class WatchTransactionStack extends Stack {
       'watch-transaction'
     );
 
-    const cluster = new ecs.Cluster(this, 'Cluster', { vpc });
+    const cluster = new ecs.Cluster(this, 'Cluster', {
+      vpc,
+      clusterName: 'WatchTransactionCluster',
+    });
 
     const logGroup = new logs.LogGroup(this, 'LogGroup', {
       retention: logs.RetentionDays.ONE_WEEK,
@@ -61,6 +64,7 @@ export class WatchTransactionStack extends Stack {
       desiredCount: 1,
       assignPublicIp: true,
       vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
+      serviceName: 'WatchTransactionService',
     });
   }
 }
