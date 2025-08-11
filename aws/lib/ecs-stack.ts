@@ -38,6 +38,7 @@ export class WatchTransactionStack extends Stack {
     });
 
     const logGroup = new logs.LogGroup(this, 'LogGroup', {
+      logGroupName: '/ecs/watch-transaction',
       retention: logs.RetentionDays.ONE_WEEK,
     });
 
