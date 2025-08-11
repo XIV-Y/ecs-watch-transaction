@@ -4,6 +4,7 @@ import * as cdk from 'aws-cdk-lib';
 import { WatchTransactionStack } from '../lib/ecs-stack';
 import { WatchTransactionECRStack } from '../lib/ecr-stack';
 import { EcsMonitoringStack } from '../lib/ecs-monitoring-stack';
+import { LogsAlertStack } from '../lib/logs-alert-stack';
 
 const app = new cdk.App();
 
@@ -24,6 +25,14 @@ new WatchTransactionStack(app, 'WatchTransactionStack', {
 new EcsMonitoringStack(app, 'EcsMonitoringStack', {
   clusterName: 'WatchTransactionCluster',
   serviceName: 'WatchTransactionService', 
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION,
+  },
+});
+
+new LogsAlertStack(app, 'LogsAlertStack', {
+  logGroupName: '/ecs/watch-transaction',
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
