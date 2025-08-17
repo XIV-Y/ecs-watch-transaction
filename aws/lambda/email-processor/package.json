@@ -1,0 +1,9 @@
+{
+  "name": "email-processor-lambda",
+  "version": "1.0.0",
+  "description": "SQS to SES email processor",
+  "main": "emailProcessor.js",
+  "dependencies": {
+    "@aws-sdk/client-ses": "^3.0.0"
+  }
+}

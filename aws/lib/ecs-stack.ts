@@ -1,7 +1,7 @@
-import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import * as dotenv from 'dotenv';
 
@@ -42,9 +42,29 @@ export class WatchTransactionStack extends Stack {
       retention: logs.RetentionDays.ONE_WEEK,
     });
 
+    const taskRole = new iam.Role(this, 'TaskRole', {
+      assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
+    });
+
+    taskRole.addToPolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: [
+          'sqs:SendMessage',
+          'sqs:GetQueueAttributes',
+          'sqs:GetQueueUrl',
+        ],
+        resources: [
+          `arn:aws:sqs:${this.region}:${this.account}:email-processor-queue`,
+          `arn:aws:sqs:${this.region}:${this.account}:email-processor-dlq`,
+        ],
+      })
+    );
+
     const taskDef = new ecs.FargateTaskDefinition(this, 'TaskDef', {
       cpu: 256,
       memoryLimitMiB: 512,
+      taskRole,
     });
 
     taskDef.addContainer('AppContainer', {
@@ -56,6 +76,7 @@ export class WatchTransactionStack extends Stack {
       environment: {
         INFURA_URL: process.env.INFURA_URL ?? '',
         CONTRACT_ADDRESS: process.env.CONTRACT_ADDRESS ?? '',
+        QUEUE_URL: process.env.QUEUE_URL ?? '',
       },
     });
 

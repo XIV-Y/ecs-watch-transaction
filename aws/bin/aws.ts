@@ -5,10 +5,18 @@ import { WatchTransactionStack } from '../lib/ecs-stack';
 import { WatchTransactionECRStack } from '../lib/ecr-stack';
 import { EcsMonitoringStack } from '../lib/ecs-monitoring-stack';
 import { LogsAlertStack } from '../lib/logs-alert-stack';
+import { LambdaSqsStack } from '../lib/lambda-sqs-stack';
 
 const app = new cdk.App();
 
 new WatchTransactionECRStack(app, 'WatchTransactionECRStack', {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION,
+  },
+});
+
+new LambdaSqsStack(app, 'LambdaSqsStack', {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
