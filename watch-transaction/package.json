@@ -19,6 +19,7 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@aws-sdk/client-sqs": "^3.864.0",
     "dotenv": "^17.0.1",
     "ethers": "^6.15.0"
   }

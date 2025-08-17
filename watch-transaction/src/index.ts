@@ -1,5 +1,6 @@
 
 import { ethers } from 'ethers';
+import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
 
 import 'dotenv/config';
 
@@ -13,6 +14,7 @@ interface TransferEvent {
 
 const INFURA_URL = `wss://sepolia.infura.io/ws/v3/${process.env.INFURA_URL}`
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS
+const QUEUE_URL = process.env.QUEUE_URL
 
 const ERC721_ABI = [
   'event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)'
@@ -21,10 +23,28 @@ const ERC721_ABI = [
 class ERC721TransferListener {
   private provider: ethers.WebSocketProvider;
   private contract: ethers.Contract;
+  private sqsClient: SQSClient;
 
   constructor(providerUrl: string, contractAddress: string) {
     this.provider = new ethers.WebSocketProvider(providerUrl);
     this.contract = new ethers.Contract(contractAddress, ERC721_ABI, this.provider);
+    this.sqsClient = new SQSClient({ region: process.env.AWS_REGION || 'ap-northeast-1' });
+  }
+
+  async sendMessageToSQS(messageData: TransferEvent) {
+    try {
+      const command = new SendMessageCommand({
+        QueueUrl: QUEUE_URL,
+        MessageBody: JSON.stringify(messageData),
+      });
+
+      const result = await this.sqsClient.send(command);
+      console.log('Message sent:', result.MessageId);
+      return result;
+    } catch (error) {
+      console.error('Error sending message:', error);
+      throw error;
+    }
   }
 
   async startListening(contractAddress: string): Promise<void> {
@@ -56,7 +76,7 @@ class ERC721TransferListener {
     console.log('Transfer listener stopped');
   }
 
-  private handleTransfer(transfer: TransferEvent): void {
+  private async handleTransfer(transfer: TransferEvent) {
     let type = 'TRANSFER';
 
     if (transfer.from === '0x0000000000000000000000000000000000000000') {
@@ -70,6 +90,8 @@ class ERC721TransferListener {
     }
 
     console.log(`[SUCCESS-1] Transfer Transaction Type ${type}: ${JSON.stringify(transfer)}`);
+
+    await this.sendMessageToSQS(transfer);
   }
 }
 
