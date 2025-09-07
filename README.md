@@ -8,6 +8,9 @@ EthereumブロックチェーンのNFTコントラクトを監視し、Transfer/
 Ethereum Network → ECS (Transaction Monitor) → SQS → Lambda → SES/SNS → Slack/Email
 ```
 
+<img width="1281" height="622" alt="スクリーンショット (331)" src="https://github.com/user-attachments/assets/719c916b-bce7-47a2-9319-a2841723481a" />
+
+
 ### 主要コンポーネント
 
 - **Smart Contract**: ERC721準拠のNFTコントラクト
